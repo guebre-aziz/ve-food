@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+header img {
+  width: 10rem;
+  height: auto;
+  padding: 2rem;
+}
+
+.filterElement {
+  display: flex;
+  justify-content: center;
+}
+
+.recipesListing {
+  margin: 4rem auto;
+  width: 80vw;
+}
+
+.recipe-details-wrapper {
+  width: 80vw;
+  margin: 1rem auto;
+}
+.recipe-summary-wrapper {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  /*   box-shadow: rgb(207, 207, 207) 2px 2px 3px 1px; */
+  border-radius: 0.5rem;
+}
+
+.recipe-details {
+  max-width: 45%;
+  min-width: 10rem;
+}
+
+.recipe-details-image {
+  max-width: 50%;
+  min-width: 15rem;
+}
+.recipe-details-image img {
+  border-radius: 0.5rem;
+}
+
+.main-summary-wrapper {
+  padding: 2rem;
+}
+
+.ingerdient-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.similar-recipes-listing-wrapper {
+  padding: 2rem;
+}
