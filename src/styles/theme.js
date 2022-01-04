@@ -10,6 +10,9 @@ const theme = createTheme({
       main: "#ffc215",
     },
   },
+  shape: {
+    borderRadius: 16,
+  },
 });
 
 export default theme;

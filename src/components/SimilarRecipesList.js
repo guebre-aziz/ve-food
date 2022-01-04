@@ -3,13 +3,11 @@ import React, { useEffect } from "react";
 import {
   getSimilarRecipes,
   fetchAsyncSimilarRecipes,
+  getSimilarRecipesFetchStatus,
 } from "../features/recipes/recipeSlice";
-// Components
-
-// packages elements
-import { useParams } from "react-router-dom";
+// Packages elements
+import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 // MUI
 import {
   Grid,
@@ -22,59 +20,83 @@ import {
 } from "@mui/material";
 import QueryBuilderRoundedIcon from "@mui/icons-material/QueryBuilderRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 
-function SimilarRecipesList() {
+export default function SimilarRecipesList() {
   const recipeId = useParams().id;
   const dispatch = useDispatch();
   const similarRecipesData = useSelector(getSimilarRecipes);
+  const similarRecipesFetchStatus = useSelector(getSimilarRecipesFetchStatus);
 
   useEffect(() => {
     dispatch(fetchAsyncSimilarRecipes(recipeId));
   }, [dispatch, recipeId]);
 
-  return similarRecipesData.length ? (
-    <Box className="similar-recipes-listing-wrapper">
-      <Grid container sx={{ display: "flexbox", justifyContent: "center" }}>
-        {similarRecipesData.map((recipe) => {
-          return (
-            <Link
-              key={recipe.id}
-              to={`/recipe/${recipe.id}`}
-              style={{ textDecoration: "none" }}
-            >
-              <Card sx={{ maxWidth: 200 }}>
-                <CardActionArea>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {recipe.title}
-                    </Typography>
-                    <Box sx={{ padding: "0.5rem" }}>
-                      <Chip
-                        size="large"
-                        color="primary"
-                        label={`${recipe.readyInMinutes} min`}
-                        icon={<QueryBuilderRoundedIcon />}
-                      />
-                    </Box>
-                    <Box sx={{ padding: "0.5rem" }}>
-                      <Chip
-                        size="large"
-                        color="primary"
-                        label={`${recipe.servings} servings`}
-                        icon={<PersonRoundedIcon />}
-                      />
-                    </Box>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Link>
-          );
-        })}
-      </Grid>
-    </Box>
+  return similarRecipesFetchStatus === "loading" ? (
+    <Loading />
+  ) : similarRecipesFetchStatus === "success" ? (
+    similarRecipesData.length > 0 ? (
+      <Box sx={{ p: 2 }}>
+        <Grid
+          container
+          sx={{
+            display: "flexbox",
+            flexWrap: "nowrap",
+            justifyContent: "flex-start",
+            overflow: "auto",
+          }}
+        >
+          {similarRecipesData.map((recipe) => {
+            return (
+              <Link
+                key={recipe.id}
+                to={`/recipe/${recipe.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Card sx={{ width: 200, height: 200, m: 2 }}>
+                  <CardActionArea>
+                    <CardContent>
+                      <Typography
+                        nowrap
+                        gutterBottom
+                        variant="subtitle1"
+                        component="div"
+                      >
+                        {recipe.title.length > 30
+                          ? recipe.title.substring(0, 30) + "..."
+                          : recipe.title}
+                      </Typography>
+                      <Box sx={{ padding: "0.5rem" }}>
+                        <Chip
+                          size="large"
+                          color="primary"
+                          label={`${recipe.readyInMinutes} min`}
+                          icon={<QueryBuilderRoundedIcon />}
+                        />
+                      </Box>
+                      <Box sx={{ padding: "0.5rem" }}>
+                        <Chip
+                          size="large"
+                          color="primary"
+                          label={`${recipe.servings} servings`}
+                          icon={<PersonRoundedIcon />}
+                        />
+                      </Box>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Link>
+            );
+          })}
+        </Grid>
+      </Box>
+    ) : (
+      <Typography variant="h6" align="center" sx={{ p: 2 }}>
+        No similar recipes found. 😥
+      </Typography>
+    )
   ) : (
-    <Typography variant="h6">No similar recipes found.</Typography>
+    <ErrorMessage />
   );
 }
-
-export default SimilarRecipesList;

@@ -3,7 +3,7 @@ import React from "react";
 function NotFound() {
   return (
     <>
-      <h1>page not found</h1>
+      <h1 style={{ marginTop: "6rem" }}>page not found</h1>
     </>
   );
 }

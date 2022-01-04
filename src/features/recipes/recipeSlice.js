@@ -4,14 +4,14 @@ require("dotenv").config();
 
 const recipeDetailsFetchParams = {
   params: {
-    apiKey: process.env.SPOONACULAR_API_KEY,
+    apiKey: "bda05a2de18f42998ca6507d78930517",
     includeNutrition: false,
   },
 };
 
 const similarRecipesFetchParams = {
   params: {
-    apiKey: process.env.SPOONACULAR_API_KEY,
+    apiKey: "bda05a2de18f42998ca6507d78930517",
     number: 20,
     limitLicense: true,
   },
@@ -43,6 +43,14 @@ export const fetchAsyncSimilarRecipes = createAsyncThunk(
       `/recipes/${recipeId}/similar`,
       similarRecipesFetchParams
     );
+    return response.data;
+  }
+);
+
+export const fetchAsyncAutocompleteData = createAsyncThunk(
+  "recipes/fetchAsyncAutocompleteData",
+  async (params) => {
+    const response = await recipesApi.get(`/recipes/autocomplete`, params);
     return response.data;
   }
 );
@@ -6785,7 +6793,7 @@ const initialState = {
     number: 10,
     totalResults: 2147,
   },
-  selectedRecipe: {
+  recipeDetails: {
     vegetarian: true,
     vegan: false,
     glutenFree: true,
@@ -7183,55 +7191,178 @@ const initialState = {
       sourceUrl:
         "http://www.seriouseats.com/recipes/2009/06/dinner-tonight-chickpea-bruschetta-babbo-nyc-recipe.html",
     },
+    {
+      id: 209128,
+      title: "Dinner Tonight: Grilled Romesco-Style Pork",
+      imageType: "jpg",
+      readyInMinutes: 45,
+      servings: 4,
+      sourceUrl:
+        "http://www.seriouseats.com/recipes/2008/07/grilled-romesco-style-pork-salad-recipe.html",
+    },
+    {
+      id: 31868,
+      title: "Dinner Tonight: Chickpea Bruschetta",
+      imageType: "jpg",
+      readyInMinutes: 45,
+      servings: 2,
+      sourceUrl:
+        "http://www.seriouseats.com/recipes/2009/06/dinner-tonight-chickpea-bruschetta-babbo-nyc-recipe.html",
+    },
   ],
+  autocompleteData: [
+    {
+      id: 362230,
+      title: "burger",
+      imageType: "jpeg",
+    },
+    {
+      id: 410370,
+      title: "burgoo",
+      imageType: "jpeg",
+    },
+    {
+      id: 82695,
+      title: "burnt ends",
+      imageType: "jpg",
+    },
+    {
+      id: 528118,
+      title: "burger buns",
+      imageType: "jpg",
+    },
+    {
+      id: 83797,
+      title: "burrito bar",
+      imageType: "jpg",
+    },
+    {
+      id: 119909,
+      title: "burgerpizza",
+      imageType: "jpg",
+    },
+    {
+      id: 667086,
+      title: "burrito pie",
+      imageType: "jpg",
+    },
+    {
+      id: 506528,
+      title: "burger cake",
+      imageType: "jpg",
+    },
+    {
+      id: 110943,
+      title: "burger salad",
+      imageType: "png",
+    },
+    {
+      id: 636461,
+      title: "burdock root",
+      imageType: "jpg",
+    },
+  ],
+
+  recipesFetchStatus: "",
+  recipeDetailsFetchStatus: "",
+  similarRecipesFetchStatus: "",
+  autocompleteDataFetchStatus: "",
 };
 
 const recipesSlice = createSlice({
   name: "recipes",
   initialState,
   reducers: {
-    addRecipes: (state, { payload }) => {
-      state.recipes = payload;
+    removeSelectedRecipe: (state) => {
+      state.selectedRecipe = {};
     },
   },
   extraReducers: {
-    [fetchAsyncRecipes.pending]: () => {
+    [fetchAsyncRecipes.pending]: (state, action) => {
       console.log("Recipes data Pending");
+      return { ...state, recipesFetchStatus: "loading" };
     },
     [fetchAsyncRecipes.fulfilled]: (state, { payload }) => {
       console.log("Recipes data fetched Successfully");
-      return { ...state, recipes: payload };
+      return { ...state, recipes: payload, recipesFetchStatus: "success" };
     },
-    [fetchAsyncRecipes.rejected]: () => {
+    [fetchAsyncRecipes.rejected]: (state, action) => {
       console.log("Recipes data rejected!");
+      return { ...state, recipesFetchStatus: "failed" };
     },
     //-----
-    [fetchAsyncRecipesDetails.pending]: () => {
+
+    [fetchAsyncRecipesDetails.pending]: (state, action) => {
       console.log("Details data Pending");
+      return { ...state, recipeDetailsFetchStatus: "loading" };
     },
     [fetchAsyncRecipesDetails.fulfilled]: (state, { payload }) => {
       console.log("Details data Fetched Successfully");
-      return { ...state, selectedRecipe: payload };
+      return {
+        ...state,
+        recipeDetails: payload,
+        recipeDetailsFetchStatus: "success",
+      };
     },
-    [fetchAsyncRecipesDetails.rejected]: () => {
+    [fetchAsyncRecipesDetails.rejected]: (state, action) => {
       console.log("Details data Rejected!");
+      return { ...state, recipeDetailsFetchStatus: "failed" };
     },
     //-----
-    [fetchAsyncSimilarRecipes.pending]: () => {
+
+    [fetchAsyncSimilarRecipes.pending]: (state, action) => {
       console.log("Similar data Pending");
+      return { ...state, similarRecipesFetchStatus: "loading" };
     },
     [fetchAsyncSimilarRecipes.fulfilled]: (state, { payload }) => {
       console.log("Similar data Fetched Successfully");
-      return { ...state, similarRecipes: payload };
+      return {
+        ...state,
+        similarRecipes: payload,
+        similarRecipesFetchStatus: "success",
+      };
     },
-    [fetchAsyncSimilarRecipes.rejected]: () => {
+    [fetchAsyncSimilarRecipes.rejected]: (state, action) => {
       console.log("Similar data Rejected!");
+      return { ...state, similarRecipesFetchStatus: "failed" };
+    },
+    //-----
+
+    [fetchAsyncAutocompleteData.pending]: (state, action) => {
+      console.log("Autocomplete data Pending");
+      return { ...state, autocompleteDataFetchStatus: "loading" };
+    },
+    [fetchAsyncAutocompleteData.fulfilled]: (state, { payload }) => {
+      console.log("Autocomplete data Fetched Successfully");
+      return {
+        ...state,
+        autocompleteData: payload,
+        autocompleteDataFetchStatus: "success",
+      };
+    },
+    [fetchAsyncAutocompleteData.rejected]: (state, action) => {
+      console.log("Autocomplete data Rejected!");
+      return { ...state, autocompleteDataFetchStatus: "failed" };
     },
   },
 });
 
-export const { addRecipes } = recipesSlice.actions;
-export const getAllRecipes = (state) => state.recipes.recipes;
-export const getSelectedRecipes = (state) => state.recipes.selectedRecipe;
+export const { removeSelectedRecipe } = recipesSlice.actions;
+//---
+export const getRecipes = (state) => state.recipes.recipes;
+export const getRecipesFetchStatus = (state) =>
+  state.recipes.recipesFetchStatus;
+//---
+export const getRecipeDetails = (state) => state.recipes.recipeDetails;
+export const getRecipeDetailsFetchStatus = (state) =>
+  state.recipes.recipeDetailsFetchStatus;
+//---
 export const getSimilarRecipes = (state) => state.recipes.similarRecipes;
+export const getSimilarRecipesFetchStatus = (state) =>
+  state.recipes.similarRecipesFetchStatus;
+//---
+export const getAutocompleteData = (state) => state.recipes.autocompleteData;
+export const getAutocompleteDataFetchStatus = (state) =>
+  state.recipes.autocompleteDataFetchStatus;
+//---
 export default recipesSlice.reducer;

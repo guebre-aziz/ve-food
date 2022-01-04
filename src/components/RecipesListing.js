@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 // Components & data
 import RecipeCard from "../components/RecipeCard";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 // Packages components
 import { useSelector } from "react-redux";
 // MUI
-import { Grid } from "@mui/material";
-import { getAllRecipes } from "../features/recipes/recipeSlice";
+import { styled, alpha } from "@mui/material/styles";
+import { Grid, Typography } from "@mui/material";
+import {
+  getRecipes,
+  getRecipesFetchStatus,
+} from "../features/recipes/recipeSlice";
 import {
   Switch,
   FormControlLabel,
@@ -13,7 +19,22 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Box,
 } from "@mui/material";
+
+const RecipesListingContainer = styled("div")(({ theme }) => ({
+  width: theme.spacing("80%"),
+  margin: "auto",
+  padding: theme.spacing(5),
+  paddingTop: theme.spacing(12),
+  backgroundColor: "white",
+}));
+
+const FormControlContainer = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+}));
 
 function RecipesListing() {
   const [vegetarianAndVeganFilter, setVegetarianAndVeganFilter] =
@@ -42,14 +63,16 @@ function RecipesListing() {
     setOrderBy(e.target.value);
   };
 
-  const dietFilter = (data) => {
-    if (onlyVeganFilter) {
+  const veganFilter = (data, checker) => {
+    if (!Array.isArray(data)) return;
+    if (checker) {
       return data.filter((data) => data.vegan === true);
     }
     return data;
   };
 
   const orderFilter = (data, orderValue) => {
+    if (!Array.isArray(data)) return;
     if (orderValue) {
       if (orderValue === "spoonacularScore") {
         let newData = data.slice().sort((a, b) => {
@@ -65,13 +88,16 @@ function RecipesListing() {
     } else return data;
   };
 
-  const recipes = useSelector(getAllRecipes).results;
-  const dietFilteredRecipes = dietFilter(recipes);
+  const recipes = useSelector(getRecipes).results;
+  const recipesFetchStatus = useSelector(getRecipesFetchStatus);
+  const dietFilteredRecipes = veganFilter(recipes, onlyVeganFilter);
   const finalRecipesFiltered = orderFilter(dietFilteredRecipes, orderBy);
 
-  return finalRecipesFiltered.length ? (
-    <div className="recipesListing">
-      <div className="filterElement">
+  return recipesFetchStatus === "loading" ? (
+    <Loading />
+  ) : recipesFetchStatus === "success" ? (
+    <RecipesListingContainer>
+      <FormControlContainer>
         <FormControlLabel
           control={
             <Switch
@@ -106,20 +132,23 @@ function RecipesListing() {
             <MenuItem value="readyInMinutes">Ready time</MenuItem>
           </Select>
         </FormControl>
-      </div>
-
-      <Grid
-        container
-        spacing={{ xs: 3, md: 3 }}
-        columns={{ xs: 1, sm: 9, md: 16 }}
+      </FormControlContainer>
+      <Typography
+        variant="h6"
+        align="center"
+        color="secondary.main"
+        sx={{ mb: 4 }}
       >
+        <b>Result:</b>
+      </Typography>
+      <Grid container spacing={{ xs: 3 }}>
         {finalRecipesFiltered.map((recipe) => {
           return <RecipeCard key={recipe.id} data={recipe} />;
         })}
       </Grid>
-    </div>
+    </RecipesListingContainer>
   ) : (
-    <h2>No recipes</h2>
+    <ErrorMessage />
   );
 }
 

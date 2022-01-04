@@ -2,28 +2,37 @@ import React from "react";
 // Packages components
 import { Link } from "react-router-dom";
 // MUI
-import { Grid } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { Chip, Box } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
-import { Rating } from "@mui/material";
+import {
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  Box,
+  CardActionArea,
+  Rating,
+  Typography,
+} from "@mui/material";
+
 import QueryBuilderRoundedIcon from "@mui/icons-material/QueryBuilderRounded";
 
 function RecipeCard(props) {
   const { data } = props;
   return (
-    <Grid item xs={2} sm={4} md={4}>
-      <Link to={`/recipe/${data.id}`} style={{ textDecoration: "none" }}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
+      <Link
+        to={`/recipe/${data.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
         <Card
           sx={{
             maxWidth: 345,
-            minHeight: 400,
+            minHeight: 350,
+            maxHeight: 350,
+            transition: "all 0.2s",
             "&:hover": {
-              backgroundColor: "primary.main",
-              opacity: [0.9, 0.8, 0.7],
+              transform: "scale(1.05)",
+              backgroundColor: "secondary.main",
             },
           }}
         >
@@ -33,19 +42,22 @@ function RecipeCard(props) {
               height="180"
               image={data.image}
               alt={data.title}
+              loading="lazy"
             />
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                {data.title.substring(0, 50) + "..."}
-              </Typography>
-              <Grid>
+              <Box sx={{}}>
+                <Typography gutterBottom variant="subtitle1" component="div">
+                  {data.title.length > 50
+                    ? data.title.substring(0, 50) + "..."
+                    : data.title}
+                </Typography>
+              </Box>
+              <Box>
                 {data.vegetarian && data.vegan ? (
-                  <Chip color="primary" sx={{ m: 1 }} label="Vegan" />
+                  <Chip color="primary" sx={{ mr: 1 }} label="Vegan" />
                 ) : (
-                  <Chip color="secondary" sx={{ m: 1 }} label="Vegetarian" />
+                  <Chip color="primary" sx={{ mr: 1 }} label="Vegetarian" />
                 )}
-              </Grid>
-              <Box sx={{ padding: "0.5rem" }}>
                 <Chip
                   size="large"
                   color="primary"
@@ -53,14 +65,14 @@ function RecipeCard(props) {
                   icon={<QueryBuilderRoundedIcon />}
                 />
               </Box>
-              <Grid m={1}>
-                <Typography component="legend">Rating</Typography>
+              <Box sx={{ mt: 2 }}>
+                <Typography component="legend"></Typography>
                 <Rating
                   name="score"
                   value={data.spoonacularScore / 20}
                   readOnly
                 />
-              </Grid>
+              </Box>
             </CardContent>
           </CardActionArea>
         </Card>
