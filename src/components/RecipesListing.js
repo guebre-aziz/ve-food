@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // Components & data
 import RecipeCard from "../components/RecipeCard";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
+import {
+  fetchAsyncRecipes,
+  getRecipes,
+  getRecipesFetchStatus,
+  fetchAsyncRecipesToBePush,
+  getRecipesToBePushFetchStatus,
+  pushNewRecipes,
+  getSearchKey,
+} from "../features/recipes/recipeSlice";
 // Packages components
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // MUI
 import { styled, alpha } from "@mui/material/styles";
 import { Grid, Typography } from "@mui/material";
-import {
-  getRecipes,
-  getRecipesFetchStatus,
-} from "../features/recipes/recipeSlice";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   Switch,
   FormControlLabel,
@@ -19,11 +26,14 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Button,
   Box,
 } from "@mui/material";
+require("dotenv").config();
 
 const RecipesListingContainer = styled("div")(({ theme }) => ({
   width: theme.spacing("80%"),
+  minHeight: "100vh",
   margin: "auto",
   padding: theme.spacing(5),
   paddingTop: theme.spacing(12),
@@ -34,14 +44,35 @@ const FormControlContainer = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  flexWrap: "wrap",
+  marginBottom: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.5),
 }));
 
-function RecipesListing() {
+export default function RecipesListing() {
+  const dispatch = useDispatch();
   const [vegetarianAndVeganFilter, setVegetarianAndVeganFilter] =
     useState(true);
   const [onlyVeganFilter, setOnlyVeganFilter] = useState(false);
   const [orderBy, setOrderBy] = useState("");
-
+  const [fetchOffset, setFetchOffset] = useState(0);
+  const searchKey = useSelector(getSearchKey);
+  const recipesFetchParams = {
+    params: {
+      query: searchKey,
+      number: 20,
+      offset: fetchOffset,
+      apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
+      diet: "vegetarian, vegan",
+      instructionsRequired: true,
+      fillIngredients: true,
+      addRecipeInformation: true,
+      addRecipeNutrition: false,
+      tags: "vegetarian, vegan",
+      ignorePantry: false,
+    },
+  };
   const handleVegetarianAndVeganFilter = () => {
     setVegetarianAndVeganFilter(!vegetarianAndVeganFilter);
     if (!vegetarianAndVeganFilter) {
@@ -88,10 +119,35 @@ function RecipesListing() {
     } else return data;
   };
 
-  const recipes = useSelector(getRecipes).results;
   const recipesFetchStatus = useSelector(getRecipesFetchStatus);
-  const dietFilteredRecipes = veganFilter(recipes, onlyVeganFilter);
+  const recipes = useSelector(getRecipes);
+  const dietFilteredRecipes = veganFilter(recipes.results, onlyVeganFilter);
   const finalRecipesFiltered = orderFilter(dietFilteredRecipes, orderBy);
+  const recipesToBePushFetchStatus = useSelector(getRecipesToBePushFetchStatus);
+
+  const handleLoadMoreButtonClick = () => {
+    setFetchOffset((oldValue) => oldValue + 20);
+    dispatch(fetchAsyncRecipesToBePush(recipesFetchParams));
+    const checkerInterval = setInterval(() => {
+      if (recipesToBePushFetchStatus === "success") {
+        dispatch(pushNewRecipes());
+        clearInterval(checkerInterval);
+      }
+      if (recipesToBePushFetchStatus === "failed") {
+        clearInterval(checkerInterval);
+      }
+    }, 2000);
+  };
+
+  useEffect(() => {
+    // first calls to set data for handleLoadMoreButtonClick - don't delete
+    setFetchOffset((oldValue) => oldValue + 20);
+    dispatch(fetchAsyncRecipesToBePush(recipesFetchParams));
+    // On mounting, load recipes if data is empty to prevent error
+    if (!recipes.results) {
+      dispatch(fetchAsyncRecipes(recipesFetchParams));
+    }
+  }, []);
 
   return recipesFetchStatus === "loading" ? (
     <Loading />
@@ -133,23 +189,44 @@ function RecipesListing() {
           </Select>
         </FormControl>
       </FormControlContainer>
-      <Typography
-        variant="h6"
-        align="center"
-        color="secondary.main"
-        sx={{ mb: 4 }}
-      >
-        <b>Result:</b>
-      </Typography>
+      {recipesFetchParams.params.query && (
+        <Typography
+          variant="h6"
+          align="center"
+          color="secondary.dark"
+          sx={{ mb: 4 }}
+        >
+          {recipes.totalResults == 0 ? (
+            <b>No recipes found.</b>
+          ) : (
+            <b>Recipe{recipes.totalResults > 1 && "s"} found:</b>
+          )}
+        </Typography>
+      )}
       <Grid container spacing={{ xs: 3 }}>
         {finalRecipesFiltered.map((recipe) => {
           return <RecipeCard key={recipe.id} data={recipe} />;
         })}
       </Grid>
+      {recipes.results.length < recipes.totalResults && ( // show button if there are others recipes
+        <Box sx={{ display: "flex", justifyContent: "center", m: 3 }}>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleLoadMoreButtonClick}
+            disabled={recipesToBePushFetchStatus === "loading" ? true : false}
+          >
+            Load more
+            {recipesToBePushFetchStatus === "loading" && (
+              <Box sx={{ display: "flex", pl: 2 }}>
+                <CircularProgress size="1.5rem" color="secondary" />
+              </Box>
+            )}
+          </Button>
+        </Box>
+      )}
     </RecipesListingContainer>
   ) : (
     <ErrorMessage />
   );
 }
-
-export default RecipesListing;

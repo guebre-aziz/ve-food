@@ -4,11 +4,13 @@ import {
   fetchAsyncRecipes,
   fetchAsyncAutocompleteData,
   getAutocompleteData,
+  setSearchKey,
+  getSearchKey,
 } from "../features/recipes/recipeSlice";
 import Logo from "../images/ve-food-brand-icon.svg";
+import AutocompleteTable from "./AutocompleteTable";
 // Packages components
 import { useDispatch, useSelector } from "react-redux";
-import AutocompleteTable from "./AutocompleteTable";
 import { Link, useNavigate } from "react-router-dom";
 // MUI
 import { styled, alpha } from "@mui/material/styles";
@@ -50,6 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
+
 const LogoContainer = styled(Box)(({ theme }) => ({
   width: theme.spacing(16),
   padding: theme.spacing(0.4),
@@ -59,13 +62,19 @@ const LogoContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-function SearchBar() {
-  const [searchInput, setSearchInput] = useState("");
+export default function SearchBar() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const searchElement = useRef(null);
-  const recipesFetchParam = {
+  const [isFocus, setIsFocus] = useState(false);
+  const autocompleteData = useSelector(getAutocompleteData);
+  const searchKey = useSelector(getSearchKey);
+  const recipesFetchParams = {
     params: {
-      query: searchInput,
-      apiKey: "bda05a2de18f42998ca6507d78930517",
+      query: searchKey,
+      number: 20,
+      offset: 0,
+      apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
       diet: "vegetarian, vegan",
       instructionsRequired: true,
       fillIngredients: true,
@@ -75,14 +84,14 @@ function SearchBar() {
       ignorePantry: false,
     },
   };
+
   const autocompleteParams = {
     params: {
-      query: searchInput,
-      apiKey: "bda05a2de18f42998ca6507d78930517",
+      query: searchKey,
+      apiKey: process.env.REACT_APP_SPOONACULAR_API_KEY,
       number: 5,
     },
   };
-  const [isFocus, setIsFocus] = useState(false);
 
   const handleOnFocus = () => {
     setIsFocus(true);
@@ -91,40 +100,35 @@ function SearchBar() {
     setTimeout(() => {
       // timeout-wrapped to prevent disappearance before action
       setIsFocus(false);
-    }, 0.5);
+    }, 100);
   };
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchAsyncAutocompleteData(autocompleteParams));
-  }, [searchInput]);
-
-  console.log(process.env.SPOONACULAR_API_KEY);
-  const autocompleteData = useSelector(getAutocompleteData);
-  const navigate = useNavigate();
-
   const handleOnChange = (e) => {
-    setSearchInput(e.target.value);
+    dispatch(setSearchKey(e.target.value));
   };
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(fetchAsyncRecipes(recipesFetchParam));
+    dispatch(fetchAsyncRecipes(recipesFetchParams));
+    setIsFocus(false);
     navigate("/home");
-    setSearchInput("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSuggestClick = (suggestionText) => {
-    setSearchInput(suggestionText);
-    dispatch(fetchAsyncRecipes(recipesFetchParam));
+    dispatch(setSearchKey(suggestionText));
+    dispatch(fetchAsyncRecipes(recipesFetchParams));
     navigate("/home");
-    setSearchInput("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    dispatch(fetchAsyncAutocompleteData(autocompleteParams));
+  }, [searchKey]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ boxShadow: 0, transition: "all 0.2s" }}>
+      <AppBar position="fixed">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <LogoContainer>
             <Link to="/">
@@ -143,7 +147,7 @@ function SearchBar() {
             <Box component="form" onSubmit={handleOnSubmit}>
               <StyledInputBase
                 ref={searchElement}
-                value={searchInput}
+                value={searchKey}
                 onChange={handleOnChange}
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
@@ -163,5 +167,3 @@ function SearchBar() {
     </Box>
   );
 }
-
-export default SearchBar;

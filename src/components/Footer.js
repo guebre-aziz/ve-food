@@ -1,20 +1,41 @@
 import React from "react";
-import { Grid, Box, Container } from "@mui/material";
-import { Link } from "react-router-dom";
+// MUI
+import { Box, Container, IconButton, Typography, Divider } from "@mui/material";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
-function Footer() {
+export default function Footer() {
   return (
     <footer>
-      <Box
-        px={{ xs: 3, sm: 10 }}
-        py={{ xs: 5, sm: 10 }}
-        bgcolor="text.secondary"
-        color="white"
-      >
-        <Container maxWidth="lg"></Container>
+      <Box bgcolor="text.secondary" color="white">
+        <Container
+          sx={{
+            maxWidth: "xl",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            p: 3,
+          }}
+        >
+          <Typography variant="body2" color="primary" sx={{ pr: 2 }}>
+            guebre aziz
+          </Typography>
+          <Divider orientation="vertical" flexItem />
+
+          <IconButton href="https://www.linkedin.com/in/aziz-guebre-a49a8b177/">
+            <LinkedInIcon />
+          </IconButton>
+
+          <IconButton href="https://github.com/guebre-aziz">
+            <GitHubIcon />
+          </IconButton>
+
+          <IconButton href="https://www.instagram.com/guebreaziz_/">
+            <InstagramIcon />
+          </IconButton>
+        </Container>
       </Box>
     </footer>
   );
 }
-
-export default Footer;

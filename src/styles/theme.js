@@ -9,6 +9,9 @@ const theme = createTheme({
     secondary: {
       main: "#ffc215",
     },
+    greenLogo: {
+      main: "#c6ff5f",
+    },
   },
   shape: {
     borderRadius: 16,

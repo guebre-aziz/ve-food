@@ -13,11 +13,11 @@ import {
   Rating,
   Typography,
 } from "@mui/material";
-
 import QueryBuilderRoundedIcon from "@mui/icons-material/QueryBuilderRounded";
 
-function RecipeCard(props) {
+export default function RecipeCard(props) {
   const { data } = props;
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Link
@@ -47,8 +47,8 @@ function RecipeCard(props) {
             <CardContent>
               <Box sx={{}}>
                 <Typography gutterBottom variant="subtitle1" component="div">
-                  {data.title.length > 50
-                    ? data.title.substring(0, 50) + "..."
+                  {data.title.length > 45
+                    ? data.title.substring(0, 45) + "..."
                     : data.title}
                 </Typography>
               </Box>
@@ -80,5 +80,3 @@ function RecipeCard(props) {
     </Grid>
   );
 }
-
-export default RecipeCard;

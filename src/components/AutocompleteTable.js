@@ -1,6 +1,4 @@
 import React from "react";
-// Packages components
-
 // MUI
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -17,7 +15,7 @@ const TableContainer = styled("div")(({ theme }) => ({
   zIndex: theme.zIndex.drawer,
 }));
 
-function AutocompleteTable(props) {
+export default function AutocompleteTable(props) {
   const data = props.data;
   const handleSuggestClick = props.handleSuggestClick;
   return (
@@ -45,5 +43,3 @@ function AutocompleteTable(props) {
     )
   );
 }
-
-export default AutocompleteTable;

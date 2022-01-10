@@ -2,14 +2,10 @@ import React from "react";
 // Components & data
 import RecipesListing from "../components/RecipesListing";
 
-// Packages components
-
-function Home() {
+export default function Home() {
   return (
-    <>
+    <main>
       <RecipesListing />
-    </>
+    </main>
   );
 }
-
-export default Home;

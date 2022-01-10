@@ -1,5 +1,4 @@
 import React from "react";
-
 // MUI
 import { Typography, Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -9,15 +8,24 @@ export default function Loading() {
     <Box
       sx={{
         display: "flex",
+        justifyContent: "center",
         alignItems: "center",
-        flexDirection: "column",
-        m: 20,
+        height: "100vh",
       }}
     >
-      <Typography variant="h6" sx={{ m: 2 }}>
-        Loading...{" "}
-      </Typography>
-      <CircularProgress color="secondary" />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          m: 20,
+        }}
+      >
+        <Typography variant="h6" sx={{ m: 2 }}>
+          Loading...{" "}
+        </Typography>
+        <CircularProgress color="secondary" />
+      </Box>
     </Box>
   );
 }
