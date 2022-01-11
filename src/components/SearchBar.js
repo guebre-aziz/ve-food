@@ -128,7 +128,7 @@ export default function SearchBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{ boxShadow: 0 }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <LogoContainer>
             <Link to="/">

@@ -95,24 +95,19 @@ const recipesSlice = createSlice({
   },
   extraReducers: {
     [fetchAsyncRecipes.pending]: (state, action) => {
-      console.log("Recipes data Pending");
       return { ...state, recipesFetchStatus: "loading" };
     },
     [fetchAsyncRecipes.fulfilled]: (state, { payload }) => {
-      console.log("Recipes data fetched Successfully");
       return { ...state, recipes: payload, recipesFetchStatus: "success" };
     },
     [fetchAsyncRecipes.rejected]: (state, action) => {
-      console.log("Recipes data rejected!");
       return { ...state, recipesFetchStatus: "failed" };
     },
     //-----
     [fetchAsyncRecipesToBePush.pending]: (state, action) => {
-      console.log("Recipes to be pushed data Pending");
       return { ...state, recipesToBePushFetchStatus: "loading" };
     },
     [fetchAsyncRecipesToBePush.fulfilled]: (state, { payload }) => {
-      console.log("Recipes to be pushed data fetched Successfully");
       return {
         ...state,
         recipesToBePush: payload,
@@ -120,16 +115,13 @@ const recipesSlice = createSlice({
       };
     },
     [fetchAsyncRecipesToBePush.rejected]: (state, action) => {
-      console.log("Recipes to be pushed data rejected!");
       return { ...state, recipesToBePushFetchStatus: "failed" };
     },
     //-----
     [fetchAsyncRecipesDetails.pending]: (state, action) => {
-      console.log("Details data Pending");
       return { ...state, recipeDetailsFetchStatus: "loading" };
     },
     [fetchAsyncRecipesDetails.fulfilled]: (state, { payload }) => {
-      console.log("Details data Fetched Successfully");
       return {
         ...state,
         recipeDetails: payload,
@@ -137,17 +129,14 @@ const recipesSlice = createSlice({
       };
     },
     [fetchAsyncRecipesDetails.rejected]: (state, action) => {
-      console.log("Details data Rejected!");
       return { ...state, recipeDetailsFetchStatus: "failed" };
     },
     //-----
 
     [fetchAsyncSimilarRecipes.pending]: (state, action) => {
-      console.log("Similar data Pending");
       return { ...state, similarRecipesFetchStatus: "loading" };
     },
     [fetchAsyncSimilarRecipes.fulfilled]: (state, { payload }) => {
-      console.log("Similar data Fetched Successfully");
       return {
         ...state,
         similarRecipes: payload,
@@ -155,17 +144,14 @@ const recipesSlice = createSlice({
       };
     },
     [fetchAsyncSimilarRecipes.rejected]: (state, action) => {
-      console.log("Similar data Rejected!");
       return { ...state, similarRecipesFetchStatus: "failed" };
     },
     //-----
 
     [fetchAsyncAutocompleteData.pending]: (state, action) => {
-      console.log("Autocomplete data Pending");
       return { ...state, autocompleteDataFetchStatus: "loading" };
     },
     [fetchAsyncAutocompleteData.fulfilled]: (state, { payload }) => {
-      console.log("Autocomplete data Fetched Successfully");
       return {
         ...state,
         autocompleteData: payload,
@@ -173,7 +159,6 @@ const recipesSlice = createSlice({
       };
     },
     [fetchAsyncAutocompleteData.rejected]: (state, action) => {
-      console.log("Autocomplete data Rejected!");
       return { ...state, autocompleteDataFetchStatus: "failed" };
     },
   },

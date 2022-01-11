@@ -136,7 +136,7 @@ export default function RecipesListing() {
       if (recipesToBePushFetchStatus === "failed") {
         clearInterval(checkerInterval);
       }
-    }, 2000);
+    }, 200);
   };
 
   useEffect(() => {
