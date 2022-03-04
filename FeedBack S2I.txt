@@ -1,0 +1,15 @@
+Ciao Aziz,
+
+wow che lavoro curato, sono sbalordito! Sembra un lavoro molto professionale :)
+
+Ti lascio qualche feedback per migliorare 
+
+Per ogni componente react crea una cartella con dentro il componente e lo stile associato così sarà più facile ritrovare gli stili e modificarli
+Fai aprire tutti i collegamenti esterni alla tua pagina web in una tab esterna in modo tale che il tuo sito rimaga sempre visibile puoi usare nel tag a l'attributo target="_blank"
+Per concatenare le classi puoi usare il pacchetto classnames
+Nella struttura a file e cartelle metti la prima lettera minuscola per le cartelle e per i files in generale. Solo per i files che contengono componenti React metti la prima lettera maiuscola. 
+React ha il supporto nativo per SCSS, usali pure per andare molto più veloce nel tuo lavoro
+Ho molto apprezzato come hai gestito le API, lo hai fatto molto bene! Se vuoi però ottimizzarle ti consiglio di vedere la libreria ReactQuery. Praticamente gestisce in automatico gli stati di loading ed error e fa tantissime altre cose... da provare!
+Comunque ottimo lavoro
+
+Bravo!

@@ -23,15 +23,21 @@ export default function Footer() {
           </Typography>
           <Divider orientation="vertical" flexItem />
 
-          <IconButton href="https://www.linkedin.com/in/aziz-guebre-a49a8b177/">
+          <IconButton
+            href="https://www.linkedin.com/in/aziz-guebre-a49a8b177/"
+            target="_blank"
+          >
             <LinkedInIcon />
           </IconButton>
 
-          <IconButton href="https://github.com/guebre-aziz">
+          <IconButton href="https://github.com/guebre-aziz" target="_blank">
             <GitHubIcon />
           </IconButton>
 
-          <IconButton href="https://www.instagram.com/guebreaziz_/">
+          <IconButton
+            href="https://www.instagram.com/guebreaziz_/"
+            target="_blank"
+          >
             <InstagramIcon />
           </IconButton>
         </Container>
