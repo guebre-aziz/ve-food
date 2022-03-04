@@ -24,7 +24,7 @@ export default function Footer() {
           <Divider orientation="vertical" flexItem />
 
           <IconButton
-            href="https://www.linkedin.com/in/aziz-guebre-a49a8b177/"
+            href="https://www.linkedin.com/in/azizguebre/"
             target="_blank"
           >
             <LinkedInIcon />
